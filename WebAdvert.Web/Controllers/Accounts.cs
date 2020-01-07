@@ -42,10 +42,9 @@ namespace WebAdvert.Web.Controllers
 
                 user.Attributes.Add(CognitoAttribute.Name.AttributeName, model.Email);
 
-                //var createdUser = await _userManager.CreateAsync(user, model.Password);
+                var createdUser = await _userManager.CreateAsync(user, model.Password);
 
-                //if (createdUser.Succeeded)
-                if(true)
+                if (createdUser.Succeeded)
                 {
                     return RedirectToAction("Confirm");
                 }
@@ -61,7 +60,7 @@ namespace WebAdvert.Web.Controllers
 
         [HttpPost]
         [ActionName("Confirm")]
-        public async Task<IActionResult> Confirm_Post(ConfirmModel model)
+        public async Task<IActionResult> ConfirmPost(ConfirmModel model)
         {
             if (ModelState.IsValid)
             {
@@ -91,6 +90,32 @@ namespace WebAdvert.Web.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Login(LoginModel model)
+        {
+            return View(model);
+        }
+
+        [HttpPost]
+        [ActionName("Login")]
+        public async Task<IActionResult> LoginPost(LoginModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var result = await _singInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+
+            if(result.Succeeded)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                ModelState.AddModelError("LoginError", "Email and password do not match");
+            }
+
+            return View("Login", model);
         }
     }
 }
