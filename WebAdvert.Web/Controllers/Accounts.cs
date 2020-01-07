@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Amazon.AspNetCore.Identity.Cognito;
 using Amazon.Extensions.CognitoAuthentication;
 using Microsoft.AspNetCore.Identity;
@@ -116,6 +118,74 @@ namespace WebAdvert.Web.Controllers
             }
 
             return View("Login", model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordModel model)
+        {
+            return View(model);
+        }
+
+        [HttpPost]
+        [ActionName("ForgotPassword")]
+        public async Task<IActionResult> ForgotPasswordPost(ForgotPasswordModel model)
+        {
+            if (!ModelState.IsValid) View(model);
+
+            var user = _pool.GetUser(model.Email);
+
+            var response = await (_userManager as CognitoUserManager<CognitoUser>).ResetPasswordAsync(user).ConfigureAwait(false);
+
+            if (response.Succeeded)
+            {
+                return RedirectToAction("ConfirmForgotPasswordCode", "Accounts");
+            }
+            else
+            {
+                ModelState.AddModelError("Error", "Ooups!!");
+
+                foreach (var error in response.Errors)
+                {
+                    ModelState.AddModelError(error.Code, error.Description);
+                }
+
+                return View(model);
+            }
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmForgotPasswordCode(ConfirmForgotPassword model)
+        {
+            return View(model);
+        }
+
+        [HttpPost]
+        [ActionName("ConfirmForgotPasswordCode")]
+        public async Task<IActionResult> ConfirmForgotPasswordPost(ConfirmForgotPassword model)
+        {
+            if (!ModelState.IsValid) View(model);
+
+            var user = _pool.GetUser(model.Email);
+
+            var response = await _userManager.ResetPasswordAsync(user, model.Code, model.NewPasword).ConfigureAwait(false);
+
+            if (!response.Succeeded)
+            {
+                ModelState.AddModelError("Error", "Ooups!!");
+
+                foreach (var error in response.Errors)
+                {
+                    ModelState.AddModelError(error.Code, error.Description);
+                }
+             
+                return View(model);
+            }
+            else
+            {
+                return View("Login");
+            }
         }
     }
 }

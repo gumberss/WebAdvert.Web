@@ -22,7 +22,7 @@ namespace WebAdvert.Web
             services.AddCognitoIdentity();
             services.ConfigureApplicationCookie(options =>
             {
-                options.LoginPath = "/Acounts/Login";
+                options.LoginPath = "/accounts/login";
             });
             /*
              config =>

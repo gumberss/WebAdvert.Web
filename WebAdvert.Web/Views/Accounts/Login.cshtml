@@ -3,10 +3,15 @@
 
 <div class="row">
     <div class="col-md-4">
-        <h4>Login usung your email address and password</h4>
+        <h4>Login using your email address and password</h4>
         <h5>
             <a asp-controller="accounts" asp-action="Signup">
                 If you are not a member you can sign up here
+            </a>
+        </h5>
+        <h5>
+            <a asp-controller="accounts" asp-action="forgotpassword">
+                If you forgot your password click here
             </a>
         </h5>
         <form method="post" asp-controller="Accounts" asp-action="Login">
