@@ -12,14 +12,14 @@ namespace WebAdvert.Web.Models.Accounts
 
         [Required]
         [DataType(DataType.Password)]
-        [StringLength(8, ErrorMessage = "Password must be at least eight characters long, have letter, have numbers and special characters!")]
+        [StringLength(15, ErrorMessage = "Password must be at least eight characters long, have letter, have numbers and special characters!")]
         [Display(Name ="Password")]
         public String Password { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage ="Password and its confirmation do not match")]
-        public String ConfitmPassword { get; set; }
+        public String ConfirmPassword { get; set; }
 
     }
 }

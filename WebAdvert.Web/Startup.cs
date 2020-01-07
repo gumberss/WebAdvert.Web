@@ -23,6 +23,21 @@ namespace WebAdvert.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddCognitoIdentity();
+            /*
+             config =>
+            {
+                config.Password = new Microsoft.AspNetCore.Identity.PasswordOptions
+                {
+                    RequireDigit = true,
+                    RequiredLength = 8,
+                    RequiredUniqueChars = 0,
+                    RequireLowercase = true,
+                    RequireNonAlphanumeric = true,
+                    RequireUppercase = true
+                };
+            }
+             */
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,7 +52,7 @@ namespace WebAdvert.Web
                 app.UseExceptionHandler("/Home/Error");
             }
             app.UseStaticFiles();
-
+            app.UseAuthentication();
             app.UseRouting();
 
             app.UseAuthorization();
